@@ -1,0 +1,10 @@
+{
+  "extends": ["oclif", "oclif-typescript"],
+  "rules": {
+    "object-curly-spacing": ["error", "always"],
+    "semi": [2, "always"],
+    "camelcase": "off",
+    "indent": "off",
+    "arrow-parens": "off"
+  }
+}
