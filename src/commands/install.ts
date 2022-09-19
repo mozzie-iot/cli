@@ -11,10 +11,10 @@ interface Results {
   ap_interface: string | undefined;
 }
 
-const uuidValidator = (uuid: string): boolean => {
-  const regexExp = /^[\da-f]{8}(?:\b-[\da-f]{4}){3}\b-[\da-f]{12}$/gi;
-  return regexExp.test(uuid);
-};
+// const uuidValidator = (uuid: string): boolean => {
+//   const regexExp = /^[\da-f]{8}(?:\b-[\da-f]{4}){3}\b-[\da-f]{12}$/gi;
+//   return regexExp.test(uuid);
+// };
 
 export default class Install extends Command {
   static flags = {
@@ -41,13 +41,19 @@ export default class Install extends Command {
 
   private async version_support(version: string): Promise<boolean> {
     return new Promise((resolve, _reject) => {
-      access(`${process.cwd()}/dist/os/ports/${version}`, function (error) {
-        if (error) {
-          return resolve(false);
-        }
+      const dir_name =
+        process.env.NODE_ENV === 'development' ? 'cli' : 'harness-cli';
 
-        return resolve(true);
-      });
+      access(
+        `${process.env.HOME}/${dir_name}/dist/os/ports/${version}`,
+        function (error) {
+          if (error) {
+            return resolve(false);
+          }
+
+          return resolve(true);
+        },
+      );
     });
   }
 

@@ -1,15 +1,15 @@
 {
   "name": "harness-cli",
-  "version": "0.0.0",
-  "description": "oclif example Hello World CLI",
+  "version": "0.1.1",
+  "description": "Harness CLI utilities",
   "author": "",
   "bin": {
     "harness-cli": "./bin/run"
   },
-  "homepage": "https://github.com/harness/hello-world",
+  "homepage": "https://github.com/harness/cli",
   "license": "MIT",
   "main": "dist/index.js",
-  "repository": "harness/hello-world",
+  "repository": "harness/cli",
   "files": [
     "/bin",
     "/dist",
@@ -53,6 +53,11 @@
       "hello": {
         "description": "Say hello to the world and others"
       }
+    },
+    "update": {
+      "s3": {
+        "bucket": "harness-cli"
+      }
     }
   },
   "scripts": {
@@ -62,7 +67,8 @@
     "posttest": "yarn lint",
     "prepack": "yarn build && oclif manifest && oclif readme",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif readme && git add README.md"
+    "version": "oclif readme && git add README.md",
+    "dev": "NODE_ENV=development && ./bin/run"
   },
   "engines": {
     "node": ">=12.0.0"

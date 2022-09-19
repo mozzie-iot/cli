@@ -14,7 +14,7 @@ export class OS_Jammy extends OS_Port {
         // Filter out only wifi interfaces
         const interfaces = stdout
           .split('\n')
-          .filter((int) => int.includes('wifi'))
+          .filter((int) => int.includes('wifi:'))
           .map((int) => int.split(':')[1]);
 
         if (interfaces.length === 0) {
