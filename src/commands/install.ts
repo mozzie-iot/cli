@@ -1,5 +1,5 @@
 import { Command, Flags, CliUx } from '@oclif/core';
-import { exec } from 'node:child_process';
+import { exec, spawn } from 'node:child_process';
 import { access } from 'node:fs';
 import { prompt } from 'inquirer';
 import * as WGET from 'wget-improved';
@@ -9,10 +9,10 @@ import { OS_Handler } from '../os';
 const INSTALL_FILE_PATH = '/tmp/install.sh';
 
 interface Results {
-  api_key: string | undefined;
-  secret_key: string | undefined;
-  type: string | undefined;
-  ap_interface: string | undefined;
+  api_key: string;
+  secret_key: string;
+  type: string;
+  ap_interface: string;
 }
 
 // const uuidValidator = (uuid: string): boolean => {
@@ -73,18 +73,31 @@ export default class Install extends Command {
     });
   }
 
-  private async run_install(results: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      exec(
-        `${INSTALL_FILE_PATH} ${results.api_key} ${results.secret_key} ${results.type}`,
-        (error, stdout, stderr) => {
-          if (error || stderr) {
-            return reject(error || stderr);
-          }
+  private run_install(results: Results): void {
+    const install = spawn(
+      INSTALL_FILE_PATH,
+      [results.api_key, results.secret_key, results.type, results.ap_interface],
+      { stdio: 'inherit' },
+    );
 
-          return resolve(stdout);
-        },
-      );
+    if (!install.stdout || !install.stderr) {
+      return;
+    }
+
+    install.stdout.setEncoding('utf8');
+
+    install.stdout.on('data', (data) => {
+      this.log(data);
+    });
+
+    install.stderr.on('data', function (data) {
+      console.log('Something went wrong:', data.toString());
+    });
+
+    install.on('exit', function (code) {
+      if (code) {
+        console.log('code ' + code.toString());
+      }
     });
   }
 
@@ -114,7 +127,7 @@ export default class Install extends Command {
 
     const { flags } = await this.parse(Install);
 
-    const results: Results = {
+    const results: Partial<Results> = {
       api_key: undefined,
       secret_key: undefined,
       type: flags.type,
@@ -183,7 +196,7 @@ export default class Install extends Command {
       }
     }
 
-    this.log('Results: ');
+    this.log('Install instructions: ');
     console.log(results);
 
     const download = WGET.download(
@@ -203,7 +216,7 @@ export default class Install extends Command {
     download.on('end', async () => {
       await this.make_executable();
       this.log('Running install. This will take a few minutes...');
-      await this.run_install(results);
+      this.run_install(results as Results);
     });
   }
 }
