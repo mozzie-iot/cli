@@ -2,7 +2,11 @@ import { Command, Flags, CliUx } from '@oclif/core';
 import { exec } from 'node:child_process';
 import { access } from 'node:fs';
 import { prompt } from 'inquirer';
+import * as WGET from 'wget-improved';
+
 import { OS_Handler } from '../os';
+
+const INSTALL_FILE_PATH = '/tmp/install.sh';
 
 interface Results {
   api_key: string | undefined;
@@ -52,6 +56,33 @@ export default class Install extends Command {
           }
 
           return resolve(true);
+        },
+      );
+    });
+  }
+
+  private async make_executable(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      exec(`chmod +x ${INSTALL_FILE_PATH}`, (error, stdout, stderr) => {
+        if (error || stderr) {
+          return reject(error || stderr);
+        }
+
+        return resolve(stdout);
+      });
+    });
+  }
+
+  private async run_install(results: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      exec(
+        `${INSTALL_FILE_PATH} ${results.api_key} ${results.secret_key} ${results.type}`,
+        (error, stdout, stderr) => {
+          if (error || stderr) {
+            return reject(error || stderr);
+          }
+
+          return resolve(stdout);
         },
       );
     });
@@ -154,5 +185,25 @@ export default class Install extends Command {
 
     this.log('Results: ');
     console.log(results);
+
+    const download = WGET.download(
+      'https://raw.githubusercontent.com/harness-iot/utilities/main/install.sh',
+      INSTALL_FILE_PATH,
+    );
+
+    download.on('start', () => {
+      this.log('Downloading install script');
+    });
+
+    download.on('error', (err: any) => {
+      console.log(err);
+      this.log('Download install script failed');
+    });
+
+    download.on('end', async () => {
+      await this.make_executable();
+      this.log('Running install. This will take a few minutes...');
+      await this.run_install(results);
+    });
   }
 }

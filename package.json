@@ -20,7 +20,8 @@
     "@oclif/core": "^1.13.10",
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-plugins": "^2.0.1",
-    "inquirer": "^8.2.4"
+    "inquirer": "^8.2.4",
+    "wget-improved": "^3.3.1"
   },
   "devDependencies": {
     "@oclif/test": "^2",
