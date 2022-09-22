@@ -31,5 +31,6 @@
 
 SCRIPT
   echo "Harness CLI successfully installed!"
-  harness-cli install
 }
+
+harness-cli install
