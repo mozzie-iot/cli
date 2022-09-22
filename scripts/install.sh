@@ -33,4 +33,9 @@ SCRIPT
   echo "Harness CLI successfully installed!"
 }
 
-harness-cli install
+on_exit(){
+  echo "Your script ended now"
+  harness-cli install
+}
+
+trap 'on_exit' EXIT
