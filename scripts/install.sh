@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 {
     set -e
     SUDO=''
@@ -31,11 +31,5 @@
 
 SCRIPT
   echo "Harness CLI successfully installed!"
-}
-
-on_exit(){
-  echo "Your script ended now"
   harness-cli install
 }
-
-trap 'on_exit' EXIT
