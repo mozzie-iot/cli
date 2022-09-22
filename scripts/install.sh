@@ -30,8 +30,6 @@
     apt-get install -y harness-cli
 
 SCRIPT
-  # test the CLI
-  LOCATION=$(which harness-cli)
-  echo "harness installed to $LOCATION"
-  harness-cli version
+  echo "Harness CLI successfully installed!"
+  harness-cli install
 }
