@@ -31,11 +31,11 @@
 
 SCRIPT
     echo ""
-    echo "************************************************"
+    echo "*****************************************************************"
     echo ""
     echo "Harness CLI successfully installed! Complete following questions."
     echo ""
-    echo "************************************************"
+    echo "*****************************************************************"
     echo ""
 
     harness-cli install
