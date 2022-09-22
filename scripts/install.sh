@@ -30,6 +30,13 @@
     apt-get install -y harness-cli
 
 SCRIPT
-  echo "Harness CLI successfully installed!"
-  harness-cli install
+    echo ""
+    echo "************************************************"
+    echo ""
+    echo "Harness CLI successfully installed! Complete following questions."
+    echo ""
+    echo "************************************************"
+    echo ""
+
+    harness-cli install
 }
