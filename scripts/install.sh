@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 {
     set -e
     SUDO=''
@@ -30,7 +30,13 @@
     apt-get install -y harness-cli
 
 SCRIPT
-  echo "Harness CLI successfully installed!"
-}
+    echo ""
+    echo "*****************************************************************"
+    echo ""
+    echo "Harness CLI successfully installed! Complete following questions."
+    echo ""
+    echo "*****************************************************************"
+    echo ""
 
-harness-cli install
+    harness-cli install
+}
