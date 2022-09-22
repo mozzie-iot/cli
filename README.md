@@ -1,5 +1,13 @@
 # Harness CLI
 
+<br/>
+
+## Development setup
+
+---
+
+- Set environment variable: `HARNESS_CLI_DEB_KEY=<GPG KEY ID>`
+
 <br/><br/>
 
 ## Creating new version/release
