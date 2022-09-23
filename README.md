@@ -4,7 +4,11 @@
 
 ## Creating new version/release
 
-#### `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` must be added to env vars
+#### Set environment variables:
+
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `HARNESS_CLI_DEB_KEY=<GPG KEY ID>`
 
 ---
 
@@ -14,6 +18,8 @@
 4. `cd ~/cli && oclif upload deb`
 5. In AWS, copy contents of `versions/[version]/[sha]/apt` into `latest` folder
 
+Note: use `npm run dev [cmd]` to run for development (sets NODE_ENV to development)
+
 <br/><br/>
 
 ## Install
@@ -21,12 +27,3 @@
 ---
 
 `bash <(wget -qO- https://raw.githubusercontent.com/harness-iot/cli/main/scripts/install.sh)`
-
-<br/><br/>
-
-## Development
-
----
-
-- Set environment variable: `HARNESS_CLI_DEB_KEY=<GPG KEY ID>`
-- Use `npm run dev [cmd]` to run for development (sets NODE_ENV to development)
