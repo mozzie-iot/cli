@@ -28,7 +28,8 @@
 4. `cd ~/cli && npx oclif upload deb`
 5. In AWS, copy contents of `versions/[version]/[sha]/apt` into `latest` folder
 
-Note: use `npm run dev [cmd]` to run for development (sets NODE_ENV to development)
+Note: use `npm run dev [cmd]` (run `npm run build` first) to run for development (sets NODE_ENV to development) 
+
 
 <br/><br/>
 

@@ -45,11 +45,8 @@ export default class Install extends Command {
 
   private async version_support(version: string): Promise<boolean> {
     return new Promise((resolve, _reject) => {
-      const dir_name =
-        process.env.NODE_ENV === 'development' ? 'cli' : 'huebot-cli';
-
       access(
-        `${process.env.HOME}/${dir_name}/dist/os/ports/${version}`,
+        `${process.env.HOME}/hub-cli/dist/os/ports/${version}`,
         function (error) {
           if (error) {
             return resolve(false);
@@ -113,6 +110,7 @@ export default class Install extends Command {
 
     if (!is_version_supported) {
       this.log(`Version (${version}) not supported.`);
+      return
     }
 
     const os_handler = new OS_Handler(version);
