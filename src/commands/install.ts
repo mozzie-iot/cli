@@ -3,8 +3,10 @@ import { exec, spawn } from 'node:child_process';
 import { access } from 'node:fs';
 import { prompt } from 'inquirer';
 import * as WGET from 'wget-improved';
+import * as path from 'node:path'
 
 import { OS_Handler } from '../os';
+
 
 const INSTALL_FILE_PATH = '/tmp/install.sh';
 
@@ -46,7 +48,7 @@ export default class Install extends Command {
   private async version_support(version: string): Promise<boolean> {
     return new Promise((resolve, _reject) => {
       access(
-        `${process.env.HOME}/hub-cli/dist/os/ports/${version}`,
+        `${path.dirname(__filename)}/../os/ports/${version}`,
         function (error) {
           if (error) {
             return resolve(false);
