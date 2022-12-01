@@ -17,26 +17,26 @@
     # NMCLI req for setup
     apt-get update && apt-get install -y network-manager
 
-    # add harness repository to apt
-    echo "deb http://harness-cli.s3-website-us-east-1.amazonaws.com/latest ./" > /etc/apt/sources.list.d/harness-cli.list
+    # add huebot repository to apt
+    echo "deb http://huebot-cli.s3-website-us-east-1.amazonaws.com/latest ./" > /etc/apt/sources.list.d/huebot-cli.list
 
-    # install heroku's release key for package verification
-    curl http://harness-cli.s3-website-us-east-1.amazonaws.com/release.key | apt-key add -
+    # install Huebot's CLI release key for package verification
+    curl http://huebot-cli.s3-website-us-east-1.amazonaws.com/release.key | apt-key add -
 
     # update your sources
     apt-get update
 
     # install the toolbelt
-    apt-get install -y harness-cli
+    apt-get install -y huebot-cli
 
 SCRIPT
     echo ""
     echo "*****************************************************************"
     echo ""
-    echo "Harness CLI successfully installed! Complete following questions."
+    echo "Huebot CLI successfully installed! Complete following questions."
     echo ""
     echo "*****************************************************************"
     echo ""
 
-    harness-cli install
+    huebot-cli install
 }

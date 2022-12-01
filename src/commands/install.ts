@@ -46,7 +46,7 @@ export default class Install extends Command {
   private async version_support(version: string): Promise<boolean> {
     return new Promise((resolve, _reject) => {
       const dir_name =
-        process.env.NODE_ENV === 'development' ? 'cli' : 'harness-cli';
+        process.env.NODE_ENV === 'development' ? 'cli' : 'huebot-cli';
 
       access(
         `${process.env.HOME}/${dir_name}/dist/os/ports/${version}`,
@@ -200,7 +200,7 @@ export default class Install extends Command {
     console.log(results);
 
     const download = WGET.download(
-      'https://raw.githubusercontent.com/harness-iot/utilities/main/install.sh',
+      'https://raw.githubusercontent.com/huebot-iot/utilities/main/install.sh',
       INSTALL_FILE_PATH,
     );
 
