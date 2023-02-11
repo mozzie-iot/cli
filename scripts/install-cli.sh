@@ -38,5 +38,5 @@ SCRIPT
     echo "*****************************************************************"
     echo ""
 
-    sudo huebot install
+    huebot install
 }
