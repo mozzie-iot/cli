@@ -18,15 +18,15 @@
 
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
-- `HUEBOT_CLI_DEB_KEY=<GPG KEY ID>`
+- `HUEBOT_DEB_KEY=<GPG KEY ID>`
 
 ---
-
+In cli directory
 1. Appropriately update the version in package.json
-2. `cd ~/cli && npm run build`
-3. `cd ~/cli && npx oclif pack deb`
-4. `cd ~/cli && npx oclif upload deb`
-5. In AWS, copy contents of `versions/[version]/[sha]/apt` into `latest` folder
+2. `npm run build`
+3. `npx oclif pack deb` (see note below: might need to run `sudo apt-get install bzip2`) && (Make sure Release.gpg was created - should be asked for GPG password at the end of this step)
+4. `npx oclif upload deb`
+5. `npx oclif promote --deb --sha [sha] --version [version]` (this will move version files to /channels/stable/apt which is the install path)
 
 Note: use `npm run dev [cmd]` (run `npm run build` first) to run for development (sets NODE_ENV to development) 
 
@@ -37,7 +37,7 @@ Note: use `npm run dev [cmd]` (run `npm run build` first) to run for development
 
 ---
 
-`bash <(wget -qO- https://raw.githubusercontent.com/huebot-iot/cli/main/scripts/install.sh)`
+`bash <(wget -qO- https://raw.githubusercontent.com/huebot-iot/cli/main/scripts/install-cli.sh)`
 
 ---
 ## Some development gotchas
@@ -47,14 +47,15 @@ Note: use `npm run dev [cmd]` (run `npm run build` first) to run for development
 [
     {
         "Condition": {
-            "KeyPrefixEquals": "latest/./"
+            "KeyPrefixEquals": "apt/./"
         },
         "Redirect": {
-            "ReplaceKeyPrefixWith": "latest/"
+            "ReplaceKeyPrefixWith": "channels/stable/apt/"
         }
     }
 ]
 ```
 - Sometimes get `tmp` dir ownership errors when running `npx oclif pack deb`. No idea why, but just `chown -R` the repo dir (this could be due to not incrementing package.json version - will monitor)
 - `bzip2: not found` error - needed to install `sudo apt-get install bzip2`. Not sure why this one comes up. 
-- S3 Timeout Error when running `npx oclif upload deb`: noticed this error when trying to push over ssh. Connected to WiFi and it worked. 
+- S3 Timeout Error when running `npx oclif upload deb`: noticed this error when trying to push over ssh. Connected to WiFi and it worked.
+- On Ubuntu when running `npx oclif pack deb` I was getting "gpg: signing failed: Inappropriate ioctl for device" error. I came across this [gpg issue](https://github.com/keybase/keybase-issues/issues/2798) provides a workaround by entering `export GPG_TTY=$(tty)` in command line.

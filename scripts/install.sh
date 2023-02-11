@@ -1,42 +1,54 @@
 #!/bin/bash
-{
-    set -e
-    SUDO=''
-    if [ "$(id -u)" != "0" ]; then
-      SUDO='sudo'
-      echo "This script requires superuser access to install apt packages."
-      echo "You will be prompted for your password by sudo."
-      # clear any previous sudo permission
-      sudo -k
+
+DOWNLOAD_VERSION=$1
+API_KEY=$2
+SECRET_KEY=$3
+INSTALL_TYPE=${4:-production} # development | production (defaults to production)
+AP_INTERFACE=$5
+TMP_INSTALL_DIR="/tmp/huebot-${DOWNLOAD_VERSION}"
+HUEBOT_DIR="/usr/local/bin/huebot-test"
+RUN_DIR="${HUEBOT_DIR}/runner"
+
+if [ "$EUID" -ne 0 ] ; then
+  printf "Must be run as root.\n"
+  exit 1
+fi
+
+runInstall() {
+
+    function error_found {
+        printf "\n\n"
+        printf "#### ERROR ####\n"
+        printf "There was an error detected during install"
+        exit 1
+    }
+
+    /bin/bash scripts/download-release.sh "${DOWNLOAD_VERSION}"
+
+    printf "\nINSTALL ARGS - api_key: %s, secret_key: %s, type: %s, ap_int: %s\n\n" "${API_KEY}" "${SECRET_KEY}" "${INSTALL_TYPE}" "${AP_INTERFACE}"
+
+    printf "Creating %s..." "${HUEBOT_DIR}"
+    if ! mkdir "${HUEBOT_DIR}" ; then
+        printf "Failed: Error while trying to create %s.\n" "${HUEBOT_DIR}"
+        error_found
     fi
+    printf "Done.\n"
 
-    # run inside sudo
-    $SUDO sh <<SCRIPT
-  set -ex
+    printf "Creating %s..." "${RUN_DIR}"
+    if ! mkdir "${RUN_DIR}" ; then
+        printf "Failed: Error while trying to create %s.\n" "${RUN_DIR}"
+        error_found
+    fi
+    printf "Done.\n"
 
-    # NMCLI req for setup
-    apt-get update && apt-get install -y network-manager
+    printf "Moving files from %s to %s..." "${TMP_INSTALL_DIR}" "${RUN_DIR}"
+    if ! cp -a "${TMP_INSTALL_DIR}/." "${RUN_DIR}" ; then
+        printf "Failed: Error while copying files from tmp dir"
+        error_found
+    fi
+    printf "Done.\n"
 
-    # add huebot repository to apt
-    echo "deb http://huebot-cli.s3-website-us-east-1.amazonaws.com/latest ./" > /etc/apt/sources.list.d/huebot-cli.list
-
-    # install Huebot's CLI release key for package verification
-    curl http://huebot-cli.s3-website-us-east-1.amazonaws.com/release.key | apt-key add -
-
-    # update your sources
-    apt-get update
-
-    # install the toolbelt
-    apt-get install -y huebot-cli
-
-SCRIPT
-    echo ""
-    echo "*****************************************************************"
-    echo ""
-    echo "Huebot CLI successfully installed! Complete following questions."
-    echo ""
-    echo "*****************************************************************"
-    echo ""
-
-    huebot-cli install
+    exec /bin/bash "${RUN_DIR}"/scripts/install.sh $API_KEY $SECRET_KEY $INSTALL_TYPE $AP_INTERFACE
 }
+
+runInstall
