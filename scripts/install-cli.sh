@@ -29,15 +29,15 @@
     # install the toolbelt
     apt-get install -y huebot
 
-    echo ""
-    echo "*****************************************************************"
-    echo ""
-    echo "Huebot CLI successfully installed! Complete following questions."
-    echo ""
-    echo "*****************************************************************"
-    echo ""
-
-    huebot install
-
 SCRIPT
 }
+
+echo ""
+echo "*****************************************************************"
+echo ""
+echo "Huebot CLI successfully installed! Complete following questions."
+echo ""
+echo "*****************************************************************"
+echo ""
+
+huebot install

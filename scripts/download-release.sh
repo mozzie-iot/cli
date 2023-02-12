@@ -7,6 +7,11 @@ DOWNLOAD_DIR="/tmp"
 TARBALL_FILE="huebot-${DOWNLOAD_VERSION}"
 TMP_INSTALL_DIR="/tmp/huebot-${DOWNLOAD_VERSION}"
 
+if [ "$EUID" -ne 0 ] ; then
+  printf "Must be run as root.\n"
+  exit 1
+fi
+
 runDownload() {
 
     function error_found {
@@ -57,4 +62,7 @@ runDownload() {
 
 }
 
-runDownload 
+runDownload
+
+
+ 
