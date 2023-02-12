@@ -14,41 +14,43 @@ if [ "$EUID" -ne 0 ] ; then
   exit 1
 fi
 
-runInstall() {
+echo "hi"
 
-    function error_found {
-        printf "\n\n"
-        printf "#### ERROR ####\n"
-        printf "There was an error detected during install"
-        exit 1
-    }
+# runInstall() {
 
-    /bin/bash scripts/download-release.sh "${DOWNLOAD_VERSION}"
+#     function error_found {
+#         printf "\n\n"
+#         printf "#### ERROR ####\n"
+#         printf "There was an error detected during install"
+#         exit 1
+#     }
 
-    printf "\nINSTALL ARGS - api_key: %s, secret_key: %s, type: %s, ap_int: %s\n\n" "${API_KEY}" "${SECRET_KEY}" "${INSTALL_TYPE}" "${AP_INTERFACE}"
+#     /bin/bash scripts/download-release.sh "${DOWNLOAD_VERSION}"
 
-    printf "Creating %s..." "${HUEBOT_DIR}"
-    if ! mkdir "${HUEBOT_DIR}" ; then
-        printf "Failed: Error while trying to create %s.\n" "${HUEBOT_DIR}"
-        error_found
-    fi
-    printf "Done.\n"
+#     printf "\nINSTALL ARGS - api_key: %s, secret_key: %s, type: %s, ap_int: %s\n\n" "${API_KEY}" "${SECRET_KEY}" "${INSTALL_TYPE}" "${AP_INTERFACE}"
 
-    printf "Creating %s..." "${RUN_DIR}"
-    if ! mkdir "${RUN_DIR}" ; then
-        printf "Failed: Error while trying to create %s.\n" "${RUN_DIR}"
-        error_found
-    fi
-    printf "Done.\n"
+#     printf "Creating %s..." "${HUEBOT_DIR}"
+#     if ! mkdir "${HUEBOT_DIR}" ; then
+#         printf "Failed: Error while trying to create %s.\n" "${HUEBOT_DIR}"
+#         error_found
+#     fi
+#     printf "Done.\n"
 
-    printf "Moving files from %s to %s..." "${TMP_INSTALL_DIR}" "${RUN_DIR}"
-    if ! cp -a "${TMP_INSTALL_DIR}/." "${RUN_DIR}" ; then
-        printf "Failed: Error while copying files from tmp dir"
-        error_found
-    fi
-    printf "Done.\n"
+#     printf "Creating %s..." "${RUN_DIR}"
+#     if ! mkdir "${RUN_DIR}" ; then
+#         printf "Failed: Error while trying to create %s.\n" "${RUN_DIR}"
+#         error_found
+#     fi
+#     printf "Done.\n"
 
-    exec /bin/bash "${RUN_DIR}"/scripts/install.sh $API_KEY $SECRET_KEY $INSTALL_TYPE $AP_INTERFACE
-}
+#     printf "Moving files from %s to %s..." "${TMP_INSTALL_DIR}" "${RUN_DIR}"
+#     if ! cp -a "${TMP_INSTALL_DIR}/." "${RUN_DIR}" ; then
+#         printf "Failed: Error while copying files from tmp dir"
+#         error_found
+#     fi
+#     printf "Done.\n"
 
-runInstall
+#     exec /bin/bash "${RUN_DIR}"/scripts/install.sh $API_KEY $SECRET_KEY $INSTALL_TYPE $AP_INTERFACE
+# }
+
+# runInstall

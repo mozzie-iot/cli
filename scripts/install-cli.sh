@@ -29,7 +29,6 @@
     # install the toolbelt
     apt-get install -y huebot
 
-SCRIPT
     echo ""
     echo "*****************************************************************"
     echo ""
@@ -39,4 +38,6 @@ SCRIPT
     echo ""
 
     huebot install
+
+SCRIPT
 }
