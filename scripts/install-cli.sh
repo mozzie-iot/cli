@@ -40,4 +40,4 @@ echo ""
 echo "*****************************************************************"
 echo ""
 
-huebot install
+sudo huebot install
