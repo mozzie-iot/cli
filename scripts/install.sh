@@ -9,6 +9,10 @@ TMP_INSTALL_DIR="/tmp/huebot-${DOWNLOAD_VERSION}"
 HUEBOT_DIR="/usr/local/bin/huebot"
 RUN_DIR="${HUEBOT_DIR}/runner"
 
+if [ "$EUID" -ne 0 ] ; then
+  printf "Must be run as root.\n"
+  exit 1
+fi
 
 runInstall() {
 
@@ -19,7 +23,7 @@ runInstall() {
         exit 1
     }
 
-    sudo /bin/bash scripts/download-release.sh "${DOWNLOAD_VERSION}"
+    scripts/download-release.sh "${DOWNLOAD_VERSION}"
 
     printf "\nINSTALL ARGS - api_key: %s, secret_key: %s, type: %s, ap_int: %s\n\n" "${API_KEY}" "${SECRET_KEY}" "${INSTALL_TYPE}" "${AP_INTERFACE}"
 
@@ -44,7 +48,7 @@ runInstall() {
     fi
     printf "Done.\n"
 
-    exec sudo /bin/bash "${RUN_DIR}"/scripts/install.sh $API_KEY $SECRET_KEY $INSTALL_TYPE $AP_INTERFACE
+    exec /bin/bash "${RUN_DIR}"/scripts/install.sh $API_KEY $SECRET_KEY $INSTALL_TYPE $AP_INTERFACE
 
 }
 

@@ -136,7 +136,7 @@ export default class Install extends Command {
     }
 
     const child = spawn(
-      "sudo scripts/install.sh",
+      "scripts/install.sh",
       [github.data.tag_name, results.api_key, results.secret_key, results.type, results.ap_interface],
       { detached: true, shell: true }
     );

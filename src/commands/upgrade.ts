@@ -37,7 +37,7 @@ export default class Update extends Command {
     }
 
     const child = spawn(
-      "sudo scripts/upgrade.sh",
+      "scripts/upgrade.sh",
       [github.data.tag_name], { detached: true, shell: true }
     );
 
