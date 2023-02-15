@@ -35,7 +35,6 @@ runInstall() {
     fi
     printf "Done.\n"
 
-    printf "Creating %s..." "${RUN_DIR}"
     if [ -d "${RUN_DIR}" ] ; then
         printf "The run directory %s already exists. Removing..." "${RUN_DIR}"
         if ! rm -rf "${RUN_DIR}" ; then
@@ -43,6 +42,12 @@ runInstall() {
             error_found
         fi
         printf "Done.\n"
+    fi
+
+    printf "Creating %s..." "${RUN_DIR}"
+    if ! mkdir "${RUN_DIR}" ; then
+        printf "Failed: Error while trying to create %s.\n" "${RUN_DIR}"
+        error_found
     fi
     printf "Done.\n"
 
