@@ -30,7 +30,7 @@ runInstall() {
 
     if [ -d "${HUEBOT_DIR}" ] ; then
         printf "The huebot directory %s already exists. Removing..." "${HUEBOT_DIR}"
-        if ! rm -rf "${RUN_DIR}" ; then
+        if ! rm -rf "${HUEBOT_DIR}" ; then
             printf "Failed: Error while trying to delete huebot directory %s.\n" "${HUEBOT_DIR}"
             error_found
         fi
