@@ -23,7 +23,7 @@ runInstall() {
         exit 1
     }
 
-    scripts/download-release.sh "${DOWNLOAD_VERSION}"
+    ./scripts/download-release.sh "${DOWNLOAD_VERSION}"
 
     printf "\nINSTALL ARGS - api_key: %s, secret_key: %s, type: %s, ap_int: %s\n\n" "${API_KEY}" "${SECRET_KEY}" "${INSTALL_TYPE}" "${AP_INTERFACE}"
 
