@@ -5,6 +5,7 @@ API_KEY=$2
 SECRET_KEY=$3
 INSTALL_TYPE=${4:-production} # development | production (defaults to production)
 AP_INTERFACE=$5
+CLI_INSTALL_DIR='/usr/lib/huebot-cli'
 TMP_INSTALL_DIR="/tmp/huebot-${DOWNLOAD_VERSION}"
 HUEBOT_DIR="/usr/local/bin/huebot"
 RUN_DIR="${HUEBOT_DIR}/runner"
@@ -23,7 +24,7 @@ runInstall() {
         exit 1
     }
 
-    ./scripts/download-release.sh "${DOWNLOAD_VERSION}"
+    "${CLI_INSTALL_DIR}"/scripts/download-release.sh "${DOWNLOAD_VERSION}"
 
     printf "\nINSTALL ARGS - api_key: %s, secret_key: %s, type: %s, ap_int: %s\n\n" "${API_KEY}" "${SECRET_KEY}" "${INSTALL_TYPE}" "${AP_INTERFACE}"
 
