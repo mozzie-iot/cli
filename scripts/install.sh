@@ -28,21 +28,21 @@ runInstall() {
 
     printf "\nINSTALL ARGS - api_key: %s, secret_key: %s, type: %s, ap_int: %s\n\n" "${API_KEY}" "${SECRET_KEY}" "${INSTALL_TYPE}" "${AP_INTERFACE}"
 
+    if [ -d "${HUEBOT_DIR}" ] ; then
+        printf "The huebot directory %s already exists. Removing..." "${HUEBOT_DIR}"
+        if ! rm -rf "${RUN_DIR}" ; then
+            printf "Failed: Error while trying to delete huebot directory %s.\n" "${HUEBOT_DIR}"
+            error_found
+        fi
+        printf "Done.\n"
+    fi
+
     printf "Creating %s..." "${HUEBOT_DIR}"
     if ! mkdir "${HUEBOT_DIR}" ; then
         printf "Failed: Error while trying to create %s.\n" "${HUEBOT_DIR}"
         error_found
     fi
     printf "Done.\n"
-
-    if [ -d "${RUN_DIR}" ] ; then
-        printf "The run directory %s already exists. Removing..." "${RUN_DIR}"
-        if ! rm -rf "${RUN_DIR}" ; then
-            printf "Failed: Error while trying to delete run directory %s.\n" "${RUN_DIR}"
-            error_found
-        fi
-        printf "Done.\n"
-    fi
 
     printf "Creating %s..." "${RUN_DIR}"
     if ! mkdir "${RUN_DIR}" ; then
