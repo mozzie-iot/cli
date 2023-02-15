@@ -28,7 +28,7 @@ In cli directory
 4. `npx oclif upload deb`
 5. `npx oclif promote --deb --sha [sha] --version [version]` (this will move version files to /channels/stable/apt which is the install path)
 
-Note: use `npm run dev [cmd]` (run `npm run build` first) to run for development (sets NODE_ENV to development) 
+Note: use `npm run dev [cmd]` to run for development (sets NODE_ENV to development) 
 
 
 <br/><br/>
