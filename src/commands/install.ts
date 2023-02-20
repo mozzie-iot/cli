@@ -1,7 +1,6 @@
 import { Command, Flags, ux } from '@oclif/core';
 import { exec, spawn } from 'node:child_process';
 import { prompt } from 'inquirer';
-import { existsSync } from 'node:fs';
 import { Octokit } from 'octokit';
 
 interface Results {
@@ -41,12 +40,6 @@ export default class Install extends Command {
   }
 
   async run(): Promise<void> {
-    const is_installed = existsSync('/usr/local/bin/huebot/runner/package.json')
-    if (is_installed) {
-      this.log('Install failed. Huebot already installed.');
-      return;
-    }
-
     const available_interfaces = await this.available_wifi_interfaces();
 
     if (available_interfaces.length === 0) {
