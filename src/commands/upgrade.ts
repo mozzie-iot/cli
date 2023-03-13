@@ -38,11 +38,11 @@ export default class Update extends Command {
 
     const child = spawn(
       `${__dirname}/../../scripts/upgrade.sh`,
-      [github.data.tag_name], { detached: true, shell: true }
+      [github.data.tag_name],
+      { detached: true, shell: true },
     );
 
     child.stdout.on('data', (data) => process.stdout.write(data));
     child.stderr.on('data', (data) => process.stderr.write(data));
-
   }
 }

@@ -54,7 +54,6 @@ export default class Install extends Command {
       repo: 'hub-runner',
     });
 
-
     this.log(`Installing version: ${github.data.tag_name}`);
 
     const { flags } = await this.parse(Install);
@@ -131,11 +130,10 @@ export default class Install extends Command {
     const child = spawn(
       `${__dirname}/../../scripts/install.sh`,
       [github.data.tag_name, results.api_key, results.secret_key, results.type, results.ap_interface],
-      { detached: true, shell: true }
+      { detached: true, shell: true },
     );
 
     child.stdout.on('data', (data) => process.stdout.write(data));
     child.stderr.on('data', (data) => process.stderr.write(data));
-
   }
 }
