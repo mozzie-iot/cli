@@ -17,7 +17,7 @@
   ],
   "dependencies": {
     "@oclif/core": "^2.0.9",
-    "@oclif/plugin-help": "^5.2.4",
+    "@oclif/plugin-help": "^5.2.6",
     "@oclif/plugin-plugins": "^2.3.0",
     "inquirer": "^8.2.4",
     "octokit": "^2.0.14",
