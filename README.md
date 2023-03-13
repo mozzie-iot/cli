@@ -33,22 +33,13 @@ Note: use `npm run dev [cmd]` to run for development (sets NODE_ENV to developme
 
 <br/><br/>
 
-## Install
+## Install CLI
 
 ---
 
-`bash <(wget -qO- https://raw.githubusercontent.com/huebot-iot/cli/main/scripts/install-cli.sh)`
+`bash <(wget -qO- http://huebot-cli.s3-website-us-east-1.amazonaws.com/install.sh)`
 
 ---
-
-## Upgrade (How it works)
-1. `download-release.sh` downloads and extracts latest release in `/tmp` dir
-2. `docker-compose down` current version in `/usr/local/bin/huebot/runner` dir
-3. Move current version (`/usr/local/bin/huebot/runner`) to backup (`/usr/local/bin/huebot/runner-backup`)
-4. Move `/tmp/huebot-[version]/` to `/usr/local/bin/huebot/runner`
-5. `cd /usr/local/bin/huebot/runner && docker-compose pull`
-6. If pull fails, move backup back to runner and start up
-7. If new version is successful, delete `/usr/local/bin/huebot/runner-backup` and purge unused images 
 
 
 ## Some development gotchas
