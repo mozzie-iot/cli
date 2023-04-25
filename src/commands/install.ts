@@ -1,12 +1,10 @@
-import { Command, Flags, ux } from '@oclif/core';
+import { Command,  ux } from '@oclif/core';
 import { spawn } from 'node:child_process';
-import { prompt } from 'inquirer';
 import { Octokit } from 'octokit';
 import * as fs from 'node:fs';
 import * as gp from 'generate-password';
 
 interface SetupArgs {
-  type: string;
   redis_password: string;
   session_secret: string;
   mqtt_username: string;
@@ -15,10 +13,6 @@ interface SetupArgs {
 
 export default class Install extends Command {
   static description = 'Install and run Huebot environment'
-
-  static flags = {
-    type: Flags.string({ options: ['production', 'development'] }),
-  };
 
   async run(): Promise<void> {
     const install_path = '/usr/local/bin/huebot';
@@ -58,10 +52,7 @@ export default class Install extends Command {
 
     this.log(`Installing version: ${github.data.tag_name}`);
 
-    const { flags } = await this.parse(Install);
-
     const setupArgs: SetupArgs = {
-      type: flags.type || '',
       redis_password: gp.generate({
         length: 30,
         numbers: true,
@@ -73,20 +64,6 @@ export default class Install extends Command {
       mqtt_username: '',
       mqtt_password: '',
     };
-
-    if (!setupArgs.type) {
-      const responses: any = await prompt([
-        {
-          name: 'type',
-          message: 'Select type of install',
-          type: 'list',
-          default: 'production',
-          choices: [{ name: 'production' }, { name: 'development' }],
-        },
-      ]);
-
-      setupArgs.type = responses.type;
-    }
 
     if (!setupArgs.mqtt_username) {
       let mqtt_username = await ux.prompt('Enter MQTT broker username (leave blank to auto-generate)', { required: false });
@@ -117,7 +94,7 @@ export default class Install extends Command {
     const child = spawn(
       // eslint-disable-next-line unicorn/prefer-module
       `${__dirname}/../../scripts/install.sh`,
-      [github.data.tag_name, setupArgs.type, setupArgs.redis_password, setupArgs.session_secret, setupArgs.mqtt_username, setupArgs.mqtt_password],
+      [github.data.tag_name, setupArgs.redis_password, setupArgs.session_secret, setupArgs.mqtt_username, setupArgs.mqtt_password],
       { detached: true, shell: true },
     );
 
