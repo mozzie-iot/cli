@@ -1,10 +1,12 @@
 #!/bin/bash
 
 DOWNLOAD_VERSION=$1
-API_KEY=$2
-SECRET_KEY=$3
-INSTALL_TYPE=${4:-production} # development | production (defaults to production)
-AP_INTERFACE=$5
+INSTALL_TYPE=$2 # development | production
+REDIS_PASSWORD=$3
+SESSION_SECRET=$4
+MQTT_USERNAME=$5
+MQTT_PASSWORD=$6
+
 CLI_INSTALL_DIR='/usr/lib/huebot-cli'
 TMP_INSTALL_DIR="/tmp/huebot-${DOWNLOAD_VERSION}"
 HUEBOT_DIR="/usr/local/bin/huebot"
@@ -26,7 +28,7 @@ runInstall() {
 
     "${CLI_INSTALL_DIR}"/scripts/download-release.sh "${DOWNLOAD_VERSION}"
 
-    printf "\nINSTALL ARGS - api_key: %s, secret_key: %s, type: %s, ap_int: %s\n\n" "${API_KEY}" "${SECRET_KEY}" "${INSTALL_TYPE}" "${AP_INTERFACE}"
+    printf "\nINSTALL ARGS - type: %s, redis password: %s, session secret: %s, mqtt username: %s, mqtt password: %s\n\n" "${INSTALL_TYPE}" "${REDIS_PASSWORD}" "${SESSION_SECRET}" "${MQTT_USERNAME}" "${MQTT_PASSWORD}"
 
     if [ -d "${HUEBOT_DIR}" ] ; then
         printf "The huebot directory %s already exists. Removing..." "${HUEBOT_DIR}"
@@ -58,8 +60,7 @@ runInstall() {
     fi
     printf "Done.\n"
 
-    exec /bin/bash "${RUN_DIR}"/scripts/install.sh $API_KEY $SECRET_KEY $INSTALL_TYPE $AP_INTERFACE
-
+    exec /bin/bash "${RUN_DIR}"/scripts/install.sh $INSTALL_TYPE $REDIS_PASSWORD $SESSION_SECRET $MQTT_USERNAME $MQTT_PASSWORD
 }
 
 runInstall

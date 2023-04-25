@@ -14,9 +14,6 @@
     $SUDO sh <<SCRIPT
   set -ex
 
-    # NMCLI req for setup
-    apt-get update && apt-get install -y network-manager
-
     # add huebot repository to apt
     echo "deb http://huebot-cli.s3-website-us-east-1.amazonaws.com/apt ./" > /etc/apt/sources.list.d/huebot.list
 
@@ -35,9 +32,7 @@ SCRIPT
 echo ""
 echo "*****************************************************************"
 echo ""
-echo "Huebot CLI successfully installed! Complete following questions."
+echo "Huebot CLI successfully installed!"
 echo ""
 echo "*****************************************************************"
 echo ""
-
-sudo huebot install

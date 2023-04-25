@@ -1,6 +1,6 @@
 {
   "name": "huebot-cli",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "description": "Huebot CLI utilities",
   "author": "",
   "bin": "./bin/run",
@@ -19,6 +19,7 @@
     "@oclif/core": "^2.0.9",
     "@oclif/plugin-help": "^5.2.4",
     "@oclif/plugin-plugins": "^2.3.0",
+    "generate-password": "^1.7.0",
     "inquirer": "^8.2.4",
     "octokit": "^2.0.14",
     "wget-improved": "^3.3.1"
@@ -26,6 +27,7 @@
   "devDependencies": {
     "@oclif/test": "^2",
     "@types/chai": "^4",
+    "@types/generate-password": "^1.5.1",
     "@types/inquirer": "^8.2.3",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.9.4",

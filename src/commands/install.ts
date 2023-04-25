@@ -1,51 +1,27 @@
 import { Command, Flags, ux } from '@oclif/core';
-import { exec, spawn } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { prompt } from 'inquirer';
 import { Octokit } from 'octokit';
+import * as fs from 'node:fs';
+import * as gp from 'generate-password';
 
-interface Results {
-  api_key: string;
-  secret_key: string;
+interface SetupArgs {
   type: string;
-  ap_interface: string;
+  redis_password: string;
+  session_secret: string;
+  mqtt_username: string;
+  mqtt_password: string
 }
 
 export default class Install extends Command {
-  static description = 'Configure the OS environment to work with Huebot'
+  static description = 'Install and run Huebot environment'
 
   static flags = {
     type: Flags.string({ options: ['production', 'development'] }),
   };
 
-  private async available_wifi_interfaces(): Promise<string[]> {
-    return new Promise((resolve, reject) => {
-      exec('nmcli -t -f TYPE,DEVICE device', (error, stdout, stderr) => {
-        if (error || stderr) {
-          return reject(error || stderr);
-        }
-
-        // Filter out only wifi interfaces
-        const interfaces = stdout
-          .split('\n')
-          .filter((int) => int.includes('wifi:'))
-          .map((int) => int.split(':')[1]);
-
-        if (interfaces.length === 0) {
-          return resolve([]);
-        }
-
-        resolve(interfaces);
-      });
-    });
-  }
-
   async run(): Promise<void> {
-    const available_interfaces = await this.available_wifi_interfaces();
-
-    if (available_interfaces.length === 0) {
-      this.log('Install failed. At least one wifi interface required.');
-      return;
-    }
+    const install_path = '/usr/local/bin/huebot';
 
     const octokit = new Octokit();
 
@@ -54,30 +30,51 @@ export default class Install extends Command {
       repo: 'hub-runner',
     });
 
+    // Check if Huebot CLI is already installed
+    if (fs.existsSync(`${install_path}/.install`)) {
+      const install_status = fs.readFileSync(`${install_path}/.install`, 'utf8');
+
+      // Already installed successfully - let's check version for suggested next steps
+      if (Number.parseInt(install_status, 10) === 0) {
+        const runner_file = fs.readFileSync(`${install_path}/runner/package.json`, 'utf8');
+
+        if (!runner_file) {
+          throw new Error('Already installed but cannot find runner package.json!');
+        }
+
+        const runner_file_json = JSON.parse(runner_file);
+
+        // Latest version already installed - nothing to do
+        if (runner_file_json.version === github.data.tag_name) {
+          console.log('Huebot already installed successfully!');
+          return;
+        }
+
+        // Suggest upgrading to latest version
+        console.log(`Huebot already installed (upgrade to version ${github.data.tag_name} using 'huebot upgrade' command)!`);
+        return;
+      }
+    }
+
     this.log(`Installing version: ${github.data.tag_name}`);
 
     const { flags } = await this.parse(Install);
 
-    const results: Results = {
-      api_key: '',
-      secret_key: '',
+    const setupArgs: SetupArgs = {
       type: flags.type || '',
-      ap_interface: '',
+      redis_password: gp.generate({
+        length: 30,
+        numbers: true,
+      }),
+      session_secret: gp.generate({
+        length: 30,
+        numbers: true,
+      }),
+      mqtt_username: '',
+      mqtt_password: '',
     };
 
-    if (!results.api_key) {
-      const api_key = await ux.prompt('Enter API key?');
-      results.api_key = api_key;
-    }
-
-    if (!results.secret_key) {
-      const secret_key = await ux.prompt('Enter secret key?', {
-        type: 'mask',
-      });
-      results.secret_key = secret_key;
-    }
-
-    if (!results.type) {
+    if (!setupArgs.type) {
       const responses: any = await prompt([
         {
           name: 'type',
@@ -87,49 +84,40 @@ export default class Install extends Command {
           choices: [{ name: 'production' }, { name: 'development' }],
         },
       ]);
-      results.type = responses.type;
+
+      setupArgs.type = responses.type;
     }
 
-    if (!results.ap_interface) {
-      const choices = available_interfaces.map((int) => ({
-        name: int,
-      }));
+    if (!setupArgs.mqtt_username) {
+      let mqtt_username = await ux.prompt('Enter MQTT broker username (leave blank to auto-generate)', { required: false });
 
-      if (choices.length === 1) {
-        const responses: any = await prompt([
-          {
-            name: 'ap_interface_confirm',
-            message: `Only 1 wifi interface (${choices[0].name}) detected which will be used for MQTT communication (network connection via ethernet will be required). Continue?`,
-            type: 'list',
-            default: 'yes',
-            choices: ['yes', 'no'],
-          },
-        ]);
-
-        if (responses.ap_interface_confirm === 'no') {
-          this.log('Install canceled');
-          return;
-        }
-
-        results.ap_interface = choices[0].name;
-      } else {
-        const responses: any = await prompt([
-          {
-            name: 'ap_interface',
-            message:
-              'Multiple wifi interfaces detected - select which to use for MQTT communication',
-            type: 'list',
-            default: choices[0].name,
-            choices,
-          },
-        ]);
-        results.ap_interface = responses.ap_interface;
+      if (!mqtt_username) {
+        mqtt_username = gp.generate({
+          length: 20,
+          numbers: true,
+        });
       }
+
+      setupArgs.mqtt_username = mqtt_username;
+    }
+
+    if (!setupArgs.mqtt_password) {
+      let mqtt_password = await ux.prompt('Enter MQTT broker password (leave blank to auto-generate)', { required: false });
+
+      if (!mqtt_password) {
+        mqtt_password = gp.generate({
+          length: 20,
+          numbers: true,
+        });
+      }
+
+      setupArgs.mqtt_password = mqtt_password;
     }
 
     const child = spawn(
+      // eslint-disable-next-line unicorn/prefer-module
       `${__dirname}/../../scripts/install.sh`,
-      [github.data.tag_name, results.api_key, results.secret_key, results.type, results.ap_interface],
+      [github.data.tag_name, setupArgs.type, setupArgs.redis_password, setupArgs.session_secret, setupArgs.mqtt_username, setupArgs.mqtt_password],
       { detached: true, shell: true },
     );
 
