@@ -1,10 +1,6 @@
 #!/bin/bash
 
 DOWNLOAD_VERSION=$1
-REDIS_PASSWORD=$2
-SESSION_SECRET=$3
-MQTT_USERNAME=$4
-MQTT_PASSWORD=$5
 
 CLI_INSTALL_DIR='/usr/lib/huebot-cli'
 TMP_INSTALL_DIR="/tmp/huebot-${DOWNLOAD_VERSION}"
@@ -59,7 +55,7 @@ runInstall() {
     fi
     printf "Done.\n"
 
-    exec /bin/bash "${RUN_DIR}"/scripts/install.sh $REDIS_PASSWORD $SESSION_SECRET $MQTT_USERNAME $MQTT_PASSWORD
+    exec /bin/bash "${RUN_DIR}"/scripts/install.sh
 }
 
 runInstall

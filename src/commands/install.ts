@@ -1,21 +1,21 @@
-import { Command,  ux } from '@oclif/core';
+import { Command } from '@oclif/core';
 import { spawn } from 'node:child_process';
 import { Octokit } from 'octokit';
 import * as fs from 'node:fs';
-import * as gp from 'generate-password';
-
-interface SetupArgs {
-  redis_password: string;
-  session_secret: string;
-  mqtt_username: string;
-  mqtt_password: string
-}
+import * as os from 'node:os';
 
 export default class Install extends Command {
   static description = 'Install and run Huebot environment'
 
   async run(): Promise<void> {
     const install_path = '/usr/local/bin/huebot';
+
+    const user = os.userInfo();
+
+    if (user.uid !== 0) {
+      console.error("This command must be run as root ('sudo huebot install')!");
+      return;
+    }
 
     const octokit = new Octokit();
 
@@ -52,49 +52,10 @@ export default class Install extends Command {
 
     this.log(`Installing version: ${github.data.tag_name}`);
 
-    const setupArgs: SetupArgs = {
-      redis_password: gp.generate({
-        length: 30,
-        numbers: true,
-      }),
-      session_secret: gp.generate({
-        length: 30,
-        numbers: true,
-      }),
-      mqtt_username: '',
-      mqtt_password: '',
-    };
-
-    if (!setupArgs.mqtt_username) {
-      let mqtt_username = await ux.prompt('Enter MQTT broker username (leave blank to auto-generate)', { required: false });
-
-      if (!mqtt_username) {
-        mqtt_username = gp.generate({
-          length: 20,
-          numbers: true,
-        });
-      }
-
-      setupArgs.mqtt_username = mqtt_username;
-    }
-
-    if (!setupArgs.mqtt_password) {
-      let mqtt_password = await ux.prompt('Enter MQTT broker password (leave blank to auto-generate)', { required: false });
-
-      if (!mqtt_password) {
-        mqtt_password = gp.generate({
-          length: 20,
-          numbers: true,
-        });
-      }
-
-      setupArgs.mqtt_password = mqtt_password;
-    }
-
     const child = spawn(
       // eslint-disable-next-line unicorn/prefer-module
       `${__dirname}/../../scripts/install.sh`,
-      [github.data.tag_name, setupArgs.redis_password, setupArgs.session_secret, setupArgs.mqtt_username, setupArgs.mqtt_password],
+      [github.data.tag_name],
       { detached: true, shell: true },
     );
 
