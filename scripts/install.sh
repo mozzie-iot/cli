@@ -23,7 +23,6 @@ runInstall() {
 
     "${CLI_INSTALL_DIR}"/scripts/download-release.sh "${DOWNLOAD_VERSION}"
 
-    printf "\nINSTALL ARGS - redis password: %s, session secret: %s, mqtt username: %s, mqtt password: %s\n\n" "${REDIS_PASSWORD}" "${SESSION_SECRET}" "${MQTT_USERNAME}" "${MQTT_PASSWORD}"
 
     if [ -d "${HUEBOT_DIR}" ] ; then
         printf "The huebot directory %s already exists. Removing..." "${HUEBOT_DIR}"

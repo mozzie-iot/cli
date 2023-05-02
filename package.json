@@ -1,6 +1,6 @@
 {
   "name": "huebot-cli",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Huebot CLI utilities",
   "author": "",
   "bin": "./bin/run",
