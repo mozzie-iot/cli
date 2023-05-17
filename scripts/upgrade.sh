@@ -27,7 +27,7 @@ runUpgrade() {
         echo '2' > $LOG_STATUS
         printf "\n\n"
         printf "#### ERROR ####\n"
-        printf "There was an error detected during upgrade... Restoring backup!"
+        printf "There was an error detected during upgrade... Restoring backup!\n"
 
         if [ -d $RUN_DIR ] ; then
             printf "Delete new release from runner dir..."
@@ -104,11 +104,50 @@ runUpgrade() {
     printf "Done.\n"
 
     printf "Move new release to runner directory..."
-    if ! mv $TMP_INSTALL_DIR $RUN_DIR >> $LOG_FILE 2>&1; then
-        printf "Failed to move %s to %s.\n" "$TMP_INSTALL_DIR" "$RUN_DIR"
+
+    if ! mkdir "${RUN_DIR}" ; then
+        printf "Failed: Error while trying to create %s.\n" "${RUN_DIR}"
+        upgrade_error_found
+    fi
+
+    if ! mkdir "${RUN_DIR}/scripts" ; then
+        printf "Failed: Error while trying to create %s.\n" "${RUN_DIR}/scripts"
+        upgrade_error_found
+    fi
+
+    LERNA_FILE="${TMP_INSTALL_DIR}/lerna.json"
+    if ! cp -a "${LERNA_FILE}" "${RUN_DIR}" ; then
+        printf "Failed: Error while copying %s.\n" "${LERNA_FILE}"
+        upgrade_error_found
+    fi
+
+    DC_FILE="${TMP_INSTALL_DIR}/docker/docker-compose.prod.yml"
+    if ! cp "${DC_FILE}" "${RUN_DIR}/docker-compose.yml" ; then
+        printf "Failed: Error while copying %s.\n" "${DC_FILE}"
+        upgrade_error_found
+    fi
+
+    INSTALL_SCRIPT="${TMP_INSTALL_DIR}/scripts/install.sh"
+    if ! cp -a "${INSTALL_SCRIPT}" "${RUN_DIR}/scripts" ; then
+        printf "Failed: Error while copying %s.\n" "${INSTALL_SCRIPT}"
+        upgrade_error_found
+    fi
+
+    UNINSTALL_SCRIPT="${TMP_INSTALL_DIR}/scripts/uninstall.sh"
+    if ! cp -a "${UNINSTALL_SCRIPT}" "${RUN_DIR}/scripts" ; then
+        printf "Failed: Error while copying %s.\n" "${UNINSTALL_SCRIPT}"
         upgrade_error_found
     fi
     printf "Done.\n"
+
+    printf "Relinking env file..."
+    if [ ! -f "${HUEBOT_DIR}/.env" ]; then
+        printf "Failed: environment variable file not found: %s.\n" "${HUEBOT_DIR}/.env"
+        upgrade_error_found
+    fi
+
+    ln -s "${HUEBOT_DIR}/.env" ${RUN_DIR}/.env
+	printf "Done.\n"
 
     printf "Running new release upgrade script..."
     if [ ! -x "${TMP_INSTALL_DIR}/scripts/upgrade.sh" ] ; then
@@ -120,6 +159,14 @@ runUpgrade() {
     printf "Upgrading containers..."
     if ! docker-compose -f $RUN_DIR/docker-compose.yml pull >> $LOG_FILE 2>&1; then
         printf "Failed to pull Docker containers in %s.\n" "$RUN_DIR/docker-compose.yml"
+        upgrade_error_found
+    fi
+    printf "Done.\n"
+
+    printf "Building containers..."
+    # Use build kit only build stages targeted in docker-compose file
+    if ! COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f $RUN_DIR/docker-compose.yml build >> $LOG_FILE 2>&1; then
+        printf "Failed to build Docker containers in %s.\n" "$RUN_DIR/docker-compose.yml"
         upgrade_error_found
     fi
     printf "Done.\n"

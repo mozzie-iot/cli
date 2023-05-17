@@ -1,7 +1,8 @@
-import { Command, Flags, ux } from '@oclif/core';
+import { Command, Flags } from '@oclif/core';
 import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { Octokit } from 'octokit';
+import * as inquirer from 'inquirer';
 
 export default class Update extends Command {
   static description = 'Update Huebot to latest version'
@@ -15,10 +16,10 @@ export default class Update extends Command {
 
     const github = await octokit.request('GET /repos/{owner}/{repo}/releases/latest', {
       owner: 'huebot-iot',
-      repo: 'hub-runner',
+      repo: 'huebot',
     });
 
-    const dataRaw = readFileSync('/usr/local/bin/huebot/runner/package.json', { encoding: 'utf-8' });
+    const dataRaw = readFileSync('/usr/local/bin/huebot/runner/lerna.json', { encoding: 'utf-8' });
 
     const data = JSON.parse(dataRaw);
 
@@ -30,9 +31,16 @@ export default class Update extends Command {
     const { flags } = await this.parse(Update);
 
     if (!flags.force) {
-      const confirm = await ux.confirm(`Update hub to latest version (${github.data.tag_name})? [y/n]`);
+      const { confirm } = await inquirer.prompt({
+        type: 'confirm',
+        name: 'confirm',
+        message: `Update hub to latest version (${github.data.tag_name})?`,
+        default: true,
+      });
+
       if (!confirm) {
         this.log('Update exited');
+        return;
       }
     }
 

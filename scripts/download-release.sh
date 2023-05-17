@@ -2,7 +2,7 @@
 # Download and extract the latest hub version for either install or upgrade
 
 DOWNLOAD_VERSION=$1
-DOWNLOAD_URL="https://github.com/huebot-iot/hub-runner/archive/refs/tags/${DOWNLOAD_VERSION}.tar.gz"
+DOWNLOAD_URL="https://github.com/huebot-iot/huebot/archive/refs/tags/${DOWNLOAD_VERSION}.tar.gz"
 DOWNLOAD_DIR="/tmp"
 TARBALL_FILE="huebot-${DOWNLOAD_VERSION}"
 TMP_INSTALL_DIR="/tmp/huebot-${DOWNLOAD_VERSION}"

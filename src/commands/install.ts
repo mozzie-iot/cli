@@ -21,7 +21,7 @@ export default class Install extends Command {
 
     const github = await octokit.request('GET /repos/{owner}/{repo}/releases/latest', {
       owner: 'huebot-iot',
-      repo: 'hub-runner',
+      repo: 'huebot',
     });
 
     // Check if Huebot CLI is already installed
@@ -30,10 +30,10 @@ export default class Install extends Command {
 
       // Already installed successfully - let's check version for suggested next steps
       if (Number.parseInt(install_status, 10) === 0) {
-        const runner_file = fs.readFileSync(`${install_path}/runner/package.json`, 'utf8');
+        const runner_file = fs.readFileSync(`${install_path}/runner/lerna.json`, 'utf8');
 
         if (!runner_file) {
-          throw new Error('Already installed but cannot find runner package.json!');
+          throw new Error('Already installed but cannot find runner lerna.json!');
         }
 
         const runner_file_json = JSON.parse(runner_file);

@@ -30,7 +30,7 @@ export default class Uninstall extends Command {
     console.log('\nUninstalling Huebot system environment!\n');
 
     const child = spawn(
-      '/home/tyler/hub-runner/scripts/uninstall.sh',
+      '/usr/local/bin/huebot/runner/scripts/uninstall.sh',
       { detached: true, shell: true },
     );
 
