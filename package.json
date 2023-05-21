@@ -2,6 +2,9 @@
   "name": "@huebot/cli",
   "version": "0.3.2",
   "description": "Huebot CLI utilities",
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "",
   "bin": "./bin/run",
   "homepage": "https://github.com/huebot-iot/cli",
