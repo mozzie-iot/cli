@@ -3,6 +3,8 @@ import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { Octokit } from 'octokit';
 import * as inquirer from 'inquirer';
+import * as path from 'node:path';
+import * as url from 'node:url';
 
 export default class Update extends Command {
   static description = 'Update Huebot to latest version'
@@ -44,9 +46,11 @@ export default class Update extends Command {
       }
     }
 
+    const cli_scripts_path = `${path.dirname(url.fileURLToPath(import.meta.url))}/../../scripts`;
+
     const child = spawn(
-      `${__dirname}/../../scripts/upgrade.sh`,
-      [github.data.tag_name],
+      `${cli_scripts_path}/upgrade.sh`,
+      [github.data.tag_name, cli_scripts_path],
       { detached: true, shell: true },
     );
 

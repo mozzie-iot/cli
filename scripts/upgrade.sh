@@ -1,8 +1,9 @@
 #!/bin/bash
 
 DOWNLOAD_VERSION=$1
+CLI_SCRIPTS_DIR=$2
+
 TMP_INSTALL_DIR="/tmp/huebot-${DOWNLOAD_VERSION}"
-CLI_INSTALL_DIR='/usr/lib/huebot-cli'
 HUEBOT_DIR="/usr/local/bin/huebot"
 RUN_DIR="${HUEBOT_DIR}/runner"
 LOG_STATUS=$HUEBOT_DIR/.upgrade
@@ -63,7 +64,7 @@ runUpgrade() {
         exit 1
     }
 
-    "${CLI_INSTALL_DIR}"/scripts/download-release.sh "${DOWNLOAD_VERSION}"
+    "${CLI_SCRIPTS_DIR}"/download-release.sh "${DOWNLOAD_VERSION}"
 
     echo '1' > $LOG_STATUS
 

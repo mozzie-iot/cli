@@ -3,6 +3,8 @@ import { spawn } from 'node:child_process';
 import { Octokit } from 'octokit';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
+import * as url from 'node:url';
+import * as path from 'node:path';
 
 export default class Install extends Command {
   static description = 'Install and run Huebot environment'
@@ -52,10 +54,12 @@ export default class Install extends Command {
 
     this.log(`Installing version: ${github.data.tag_name}`);
 
+    const cli_scripts_path = `${path.dirname(url.fileURLToPath(import.meta.url))}/../../scripts`;
+
     const child = spawn(
       // eslint-disable-next-line unicorn/prefer-module
-      `${__dirname}/../../scripts/install.sh`,
-      [github.data.tag_name],
+      `${cli_scripts_path}/install.sh`,
+      [github.data.tag_name, cli_scripts_path],
       { detached: true, shell: true },
     );
 
