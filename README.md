@@ -1,63 +1,13 @@
-# Huebot CLI
+## Description 
 
-<br/>
+The Huebot CLI is a command line interface tool setup and support the Huebot environment. Some important functionality includes, but is not limited to, installation and admin account creation. 
 
-## Development 
-1. Clone repo
-2. `npm install`
+## Installation
 
-## Creating new version/release
-
-#### Creating and setting new GPG key
-1. `gpg --gen-key` (use `gpg --list-keys` to see keys created)
-2. export key to file -> `gpg --export -a [name of key author] > release.key`
-3. Upload and replace `release.key` in bucket root
-4. Go to file permissions and make public key readable to everyone
-
-#### Set environment variables:
-
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
-- `HUEBOT_DEB_KEY=<GPG KEY ID>`
-
----
-In cli directory
-1. Appropriately update the version in package.json
-2. `npm run build`
-3. `npx oclif pack deb` (see note below: might need to run `sudo apt-get install bzip2`) && (Make sure Release.gpg was created - should be asked for GPG password at the end of this step)
-4. `npx oclif upload deb`
-5. `npx oclif promote --deb --sha [sha] --version [version]` (this will move version files to /channels/stable/apt which is the install path)
-
-Note: use `npm run dev [cmd]` to run for development (sets NODE_ENV to development) 
-
-
-<br/><br/>
-
-## Install CLI
-
----
-
-`bash <(wget -qO- http://huebot-cli.s3-website-us-east-1.amazonaws.com/install.sh)`
-
----
-
-
-## Some development gotchas
-- If creating a new bucket, need to create [index document](https://docs.aws.amazon.com/AmazonS3/latest/userguide/IndexDocumentSupport.html) to make it publicly accessible and [enable for public hosting](https://docs.aws.amazon.com/AmazonS3/latest/userguide/EnableWebsiteHosting.html)
-- When running `apt-get update` there were issues with malformed S3 links, so I needed to include the following under `redirection rules` in "Static website hosting" settings:
 ```
-[
-    {
-        "Condition": {
-            "KeyPrefixEquals": "apt/./"
-        },
-        "Redirect": {
-            "ReplaceKeyPrefixWith": "channels/stable/apt/"
-        }
-    }
-]
+$ npm install -g @huebot/cli
 ```
-- Sometimes get `tmp` dir ownership errors when running `npx oclif pack deb`. No idea why, but just `chown -R` the repo dir (this could be due to not incrementing package.json version - will monitor)
-- `bzip2: not found` error - needed to install `sudo apt-get install bzip2`. Not sure why this one comes up. 
-- S3 Timeout Error when running `npx oclif upload deb`: noticed this error when trying to push over ssh. Connected to WiFi and it worked.
-- On Ubuntu when running `npx oclif pack deb` I was getting "gpg: signing failed: Inappropriate ioctl for device" error. I came across this [gpg issue](https://github.com/keybase/keybase-issues/issues/2798) provides a workaround by entering `export GPG_TTY=$(tty)` in command line.
+
+## License
+
+Huebot is [GPLv3 licensed](LICENSE).
