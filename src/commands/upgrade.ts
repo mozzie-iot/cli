@@ -44,6 +44,7 @@ export default class Update extends Command {
       }
     }
 
+    // eslint-disable-next-line unicorn/prefer-module
     const cli_scripts_path = `${__dirname}/../../scripts`;
 
     const child = spawn(

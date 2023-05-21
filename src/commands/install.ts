@@ -52,10 +52,10 @@ export default class Install extends Command {
 
     this.log(`Installing version: ${github.data.tag_name}`);
 
+    // eslint-disable-next-line unicorn/prefer-module
     const cli_scripts_path = `${__dirname}/../../scripts`;
 
     const child = spawn(
-      // eslint-disable-next-line unicorn/prefer-module
       `${cli_scripts_path}/install.sh`,
       [github.data.tag_name, cli_scripts_path],
       { detached: true, shell: true },
