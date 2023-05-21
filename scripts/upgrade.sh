@@ -20,7 +20,7 @@ runUpgrade() {
         echo '2' > $LOG_STATUS
         printf "\n\n"
         printf "#### ERROR ####\n"
-        printf "There was an error preventing the upgrade from starting!"
+        printf "There was an error preventing the upgrade from starting! Please review the log at %s\n" "$LOG_FILE"
         exit 1
     }
 
@@ -28,7 +28,7 @@ runUpgrade() {
         echo '2' > $LOG_STATUS
         printf "\n\n"
         printf "#### ERROR ####\n"
-        printf "There was an error detected during upgrade... Restoring backup!\n"
+        printf "There was an error detected during upgrade... Restoring backup! Please review the log at %s\n" "$LOG_FILE"
 
         if [ -d $RUN_DIR ] ; then
             printf "Delete new release from runner dir..."
@@ -60,7 +60,7 @@ runUpgrade() {
         echo '2' > $LOG_STATUS
         printf "\n\n"
         printf "#### ERROR ####\n"
-        printf "Upgrade successful but clean up failed!"
+        printf "Upgrade successful but clean up failed! Please review the log at %s\n" "$LOG_FILE"
         exit 1
     }
 

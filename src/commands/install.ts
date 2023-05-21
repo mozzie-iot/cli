@@ -25,30 +25,30 @@ export default class Install extends Command {
     });
 
     // Check if Huebot CLI is already installed
-    if (fs.existsSync(`${install_path}/.install`)) {
-      const install_status = fs.readFileSync(`${install_path}/.install`, 'utf8');
+    // if (fs.existsSync(`${install_path}/.install`)) {
+    //   const install_status = fs.readFileSync(`${install_path}/.install`, 'utf8');
 
-      // Already installed successfully - let's check version for suggested next steps
-      if (Number.parseInt(install_status, 10) === 0) {
-        const runner_file = fs.readFileSync(`${install_path}/runner/lerna.json`, 'utf8');
+    //   // Already installed successfully - let's check version for suggested next steps
+    //   if (Number.parseInt(install_status, 10) === 0) {
+    //     const runner_file = fs.readFileSync(`${install_path}/runner/lerna.json`, 'utf8');
 
-        if (!runner_file) {
-          throw new Error('Already installed but cannot find runner lerna.json!');
-        }
+    //     if (!runner_file) {
+    //       throw new Error('Already installed but cannot find runner lerna.json!');
+    //     }
 
-        const runner_file_json = JSON.parse(runner_file);
+    //     const runner_file_json = JSON.parse(runner_file);
 
-        // Latest version already installed - nothing to do
-        if (runner_file_json.version === github.data.tag_name) {
-          console.log('Huebot already installed successfully!');
-          return;
-        }
+    //     // Latest version already installed - nothing to do
+    //     if (runner_file_json.version === github.data.tag_name) {
+    //       console.log('Huebot already installed successfully!');
+    //       return;
+    //     }
 
-        // Suggest upgrading to latest version
-        console.log(`Huebot already installed (upgrade to version ${github.data.tag_name} using 'huebot upgrade' command)!`);
-        return;
-      }
-    }
+    //     // Suggest upgrading to latest version
+    //     console.log(`Huebot already installed (upgrade to version ${github.data.tag_name} using 'huebot upgrade' command)!`);
+    //     return;
+    //   }
+    // }
 
     this.log(`Installing version: ${github.data.tag_name}`);
 
