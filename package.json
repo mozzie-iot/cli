@@ -1,6 +1,6 @@
 {
-  "name": "huebot-cli",
-  "version": "0.2.4",
+  "name": "huebot",
+  "version": "0.2.5",
   "description": "Huebot CLI utilities",
   "author": "",
   "bin": "./bin/run",
@@ -55,12 +55,7 @@
         "description": "Say hello to the world and others"
       }
     },
-    "update": {
-      "s3": {
-        "host": "http://huebot-cli.s3-website-us-east-1.amazonaws.com",
-        "bucket": "huebot-cli"
-      }
-    }
+    "update": {}
   },
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
