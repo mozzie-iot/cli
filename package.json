@@ -6,7 +6,9 @@
     "access": "public"
   },
   "author": "",
-  "bin": "./bin/run",
+  "bin": {
+    "huebot": "./bin/run"
+  },
   "homepage": "https://github.com/huebot-iot/cli",
   "license": "MIT",
   "main": "dist/index.js",
