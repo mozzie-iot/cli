@@ -47,13 +47,10 @@ export default class Update extends Command {
     // eslint-disable-next-line unicorn/prefer-module
     const cli_scripts_path = `${__dirname}/../../scripts`;
 
-    const child = spawn(
-      `${cli_scripts_path}/upgrade.sh`,
+    spawn(
+      `${cli_scripts_path}/upgrade-root.sh`,
       [github.data.tag_name, cli_scripts_path],
-      { detached: true, shell: true },
+      { stdio: [process.stdin, process.stdout, process.stderr], shell: true },
     );
-
-    child.stdout.on('data', (data) => process.stdout.write(data));
-    child.stderr.on('data', (data) => process.stderr.write(data));
   }
 }
