@@ -1,20 +1,11 @@
 import { Command } from '@oclif/core';
 import * as inquirer from 'inquirer';
-import * as os from 'node:os';
 import { spawn } from 'node:child_process';
-import * as fs from 'node:fs';
 
 export default class Uninstall extends Command {
   static description = 'Uninstall Huebot environment'
 
   async run(): Promise<void> {
-    const user = os.userInfo();
-
-    if (user.uid !== 0) {
-      console.error("This command must be run as root ('sudo huebot uninstall')!");
-      return;
-    }
-
     const { confirm } = await inquirer.prompt({
       type: 'confirm',
       name: 'confirm',
@@ -27,29 +18,15 @@ export default class Uninstall extends Command {
     }
 
     // Line break
-    console.log('\nUninstalling Huebot system environment!\n');
+    this.log('\nUninstalling Huebot system environment!\n');
 
-    const child = spawn(
-      '/usr/local/bin/huebot/runner/scripts/uninstall.sh',
-      { detached: true, shell: true },
+    // eslint-disable-next-line unicorn/prefer-module
+    const cli_scripts_path = `${__dirname}/../../scripts`;
+
+    spawn(
+      `${cli_scripts_path}/uninstall-root.sh`,
+      [cli_scripts_path],
+      { stdio: [process.stdin, process.stdout, process.stderr], shell: true },
     );
-
-    child.stdout.on('data', (data) => process.stdout.write(data));
-    child.stderr.on('data', (data) => process.stderr.write(data));
-
-    child.on('close', (code) => {
-      if (code === 0) {
-        process.stdout.write('Removing directories...');
-        fs.rmSync('/usr/local/bin/huebot', { recursive: true, force: true });
-        fs.rmSync('/usr/local/bin/mosquitto', { recursive: true, force: true });
-        process.stdout.write('Done.\n');
-
-        process.stdout.write('\n\n\n************************ UNINSTALL COMPLETE ************************\n\n\n');
-        process.stdout.write('Huebot system environment successfully uninstalled!\n');
-        process.stdout.write('Note: APT packages installed with Huebot have not been uninstalled \n');
-        process.stdout.write('and port configuration changes have not been reverted!\n');
-        process.stdout.write('\n\n******************************************************************\n\n\n');
-      }
-    });
   }
 }
