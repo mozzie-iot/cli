@@ -1,9 +1,14 @@
 {
-  "name": "huebot-cli",
-  "version": "0.2.4",
+  "name": "@huebot/cli",
+  "version": "0.4.4",
   "description": "Huebot CLI utilities",
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "",
-  "bin": "./bin/run",
+  "bin": {
+    "huebot": "./bin/run"
+  },
   "homepage": "https://github.com/huebot-iot/cli",
   "license": "MIT",
   "main": "dist/index.js",
@@ -55,12 +60,7 @@
         "description": "Say hello to the world and others"
       }
     },
-    "update": {
-      "s3": {
-        "host": "http://huebot-cli.s3-website-us-east-1.amazonaws.com",
-        "bucket": "huebot-cli"
-      }
-    }
+    "update": {}
   },
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",

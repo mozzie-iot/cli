@@ -1,8 +1,9 @@
 #!/bin/bash
 
 DOWNLOAD_VERSION=$1
+CLI_SCRIPTS_DIR=$2
+
 TMP_INSTALL_DIR="/tmp/huebot-${DOWNLOAD_VERSION}"
-CLI_INSTALL_DIR='/usr/lib/huebot-cli'
 HUEBOT_DIR="/usr/local/bin/huebot"
 RUN_DIR="${HUEBOT_DIR}/runner"
 LOG_STATUS=$HUEBOT_DIR/.upgrade
@@ -19,7 +20,7 @@ runUpgrade() {
         echo '2' > $LOG_STATUS
         printf "\n\n"
         printf "#### ERROR ####\n"
-        printf "There was an error preventing the upgrade from starting!"
+        printf "There was an error preventing the upgrade from starting! Please review the log at %s\n" "$LOG_FILE"
         exit 1
     }
 
@@ -27,7 +28,7 @@ runUpgrade() {
         echo '2' > $LOG_STATUS
         printf "\n\n"
         printf "#### ERROR ####\n"
-        printf "There was an error detected during upgrade... Restoring backup!\n"
+        printf "There was an error detected during upgrade... Restoring backup! Please review the log at %s\n" "$LOG_FILE"
 
         if [ -d $RUN_DIR ] ; then
             printf "Delete new release from runner dir..."
@@ -59,11 +60,11 @@ runUpgrade() {
         echo '2' > $LOG_STATUS
         printf "\n\n"
         printf "#### ERROR ####\n"
-        printf "Upgrade successful but clean up failed!"
+        printf "Upgrade successful but clean up failed! Please review the log at %s\n" "$LOG_FILE"
         exit 1
     }
 
-    "${CLI_INSTALL_DIR}"/scripts/download-release.sh "${DOWNLOAD_VERSION}"
+    "${CLI_SCRIPTS_DIR}"/download-release.sh "${DOWNLOAD_VERSION}"
 
     echo '1' > $LOG_STATUS
 
