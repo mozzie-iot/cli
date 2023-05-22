@@ -10,13 +10,6 @@ export default class Install extends Command {
   async run(): Promise<void> {
     const install_path = '/usr/local/bin/huebot';
 
-    const user = os.userInfo();
-
-    if (user.uid !== 0) {
-      console.error("This command must be run as root ('sudo huebot install')!");
-      return;
-    }
-
     const octokit = new Octokit();
 
     const github = await octokit.request('GET /repos/{owner}/{repo}/releases/latest', {
@@ -52,16 +45,15 @@ export default class Install extends Command {
 
     this.log(`Installing version: ${github.data.tag_name}`);
 
+    const user = os.userInfo();
+
     // eslint-disable-next-line unicorn/prefer-module
     const cli_scripts_path = `${__dirname}/../../scripts`;
 
-    const child = spawn(
-      `${cli_scripts_path}/install.sh`,
-      [github.data.tag_name, cli_scripts_path],
-      { detached: true, shell: true },
+    spawn(
+      `${cli_scripts_path}/install-root.sh`,
+      [user.username, github.data.tag_name, cli_scripts_path],
+      { stdio: [process.stdin, process.stdout, process.stderr], shell: true },
     );
-
-    child.stdout.on('data', (data) => process.stdout.write(data));
-    child.stderr.on('data', (data) => process.stderr.write(data));
   }
 }
