@@ -47,7 +47,7 @@ runUpgrade() {
         printf "Done.\n"
 
         printf "Start containers..."
-        if ! docker-compose -f $RUN_DIR/docker-compose.yml up -d >> $LOG_FILE 2>&1 ; then
+        if ! docker compose -f $RUN_DIR/docker-compose.yml up -d >> $LOG_FILE 2>&1 ; then
             printf "Failed to start containers in file %s.\n" "$RUN_DIR/docker-compose.yml"
             exit 1
         fi
@@ -83,7 +83,7 @@ runUpgrade() {
 	fi
 
     printf "Stop running containers..."
-    if ! docker-compose -f $RUN_DIR/docker-compose.yml down >> $LOG_FILE 2>&1 ; then
+    if ! docker compose -f $RUN_DIR/docker-compose.yml down >> $LOG_FILE 2>&1 ; then
         printf "Failed to stop containers in file %s.\n" "$RUN_DIR/docker-compose.yml"
 		pre_upgrade_error_found
     fi
@@ -94,7 +94,7 @@ runUpgrade() {
         printf "Failed to move %s to %s.\n" "$RUN_DIR" "${HUEBOT_DIR}/backup-runner"
 
         printf "Restarting current version containers..."
-        if ! docker-compose -f $RUN_DIR/docker-compose.yml up -d >> $LOG_FILE 2>&1 ; then
+        if ! docker compose -f $RUN_DIR/docker-compose.yml up -d >> $LOG_FILE 2>&1 ; then
             printf "Failed to start containers in %s.\n" "$RUN_DIR/docker-compose.yml"
         else
             printf "Done.\n"
@@ -158,7 +158,7 @@ runUpgrade() {
     fi
     
     printf "Upgrading containers..."
-    if ! docker-compose -f $RUN_DIR/docker-compose.yml pull >> $LOG_FILE 2>&1; then
+    if ! docker compose -f $RUN_DIR/docker-compose.yml pull >> $LOG_FILE 2>&1; then
         printf "Failed to pull Docker containers in %s.\n" "$RUN_DIR/docker-compose.yml"
         upgrade_error_found
     fi
@@ -166,14 +166,14 @@ runUpgrade() {
 
     printf "Building containers..."
     # Use build kit only build stages targeted in docker-compose file
-    if ! COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f $RUN_DIR/docker-compose.yml build >> $LOG_FILE 2>&1; then
+    if ! COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose -f $RUN_DIR/docker-compose.yml build >> $LOG_FILE 2>&1; then
         printf "Failed to build Docker containers in %s.\n" "$RUN_DIR/docker-compose.yml"
         upgrade_error_found
     fi
     printf "Done.\n"
 
     printf "Starting containers..."
-    if ! docker-compose -f $RUN_DIR/docker-compose.yml up -d >> $LOG_FILE 2>&1; then
+    if ! docker compose -f $RUN_DIR/docker-compose.yml up -d >> $LOG_FILE 2>&1; then
         printf "Failed to start Docker containers in %s.\n" "$RUN_DIR/docker-compose.yml"
         upgrade_error_found
     fi
