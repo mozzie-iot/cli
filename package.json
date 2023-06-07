@@ -24,6 +24,7 @@
     "@oclif/core": "^2.0.9",
     "@oclif/plugin-help": "^5.2.4",
     "@oclif/plugin-plugins": "^2.3.0",
+    "dotenv": "^16.1.4",
     "inquirer": "^8.2.4",
     "octokit": "^2.0.14",
     "wget-improved": "^3.3.1"
